@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=0">
+    <title>newWaterChart</title>
+    <!--<link rel="stylesheet" href="css/newBarChart.css">-->
+    <style>
+        * {
+            padding:0;
+            margin:0;
+            -webkit-box-sizing: border-box;
+        }
+        .chart-wrap {
+            background-color: #7ecef4;
+        }
+        .chart-container {
+            width:120%;
+            height: 250px;
+            padding-top: 100px;
+            transform: translateX(-20px);
+        }
+        .chart-item {
+            width: 20px;
+            line-height: 120px;
+            display: inline-block;
+            border: 1px solid white;
+            border-radius: 10px;
+        }
+        .flex-wrap {
+            display: flex;justify-content: space-around;
+        }
+        .flex-item {
+
+        }
+        .chart-wrap {
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+<div class="chart-wrap">
+    <div class="chart-container flex-wrap">
+        <span class="chart-item flex-item">1</span>
+        <span class="chart-item flex-item">2</span>
+        <span class="chart-item flex-item">3</span>
+        <span class="chart-item flex-item">4</span>
+        <span class="chart-item flex-item">5</span>
+        <span class="chart-item flex-item">6</span>
+        <span class="chart-item flex-item">7</span>
+        <span class="chart-item flex-item">8</span>
+        <span class="chart-item flex-item">9</span>
+        <span class="chart-item flex-item">10</span>
+        <span class="chart-item flex-item">11</span>
+        <span class="chart-item flex-item">12</span>
+    </div>
+</div>
+
+<script src="js/zepto.min.js"></script>
+<!--<script src="js/newBarChart.js"></script>-->
+<script>
+    $(function () {
+        var chartContanier = $(".chart-container");
+        var touchstartClientX,
+                touchmoveClientX,
+                translateX,       //实时更新x轴偏移
+                shiftLen,         //touchmoveClientX - touchstartClientX
+                originalTranslateX,  //初始x轴偏移
+                flagMove = false;  //是否触发了touchmove事件
+
+        //matrix(1, 0, 0, 1, -20, 0) ,第四个为原本偏移长度
+        originalTranslateX = parseInt(chartContanier.css("transform").split(",")[4]);
+
+        chartContanier.on("touchstart", function (event) {
+            var event = event || window.event;
+            event.preventDefault();
+
+            if (shiftLen !== undefined && flagMove) {
+                originalTranslateX += shiftLen;
+            }
+            touchstartClientX = event.touches[0].clientX;
+            flagMove = false;
+        });
+        chartContanier.on("touchmove", function (event) {
+            var event = event || window.event;
+            event.preventDefault();
+
+            flagMove = true;
+            touchmoveClientX = event.touches[0].clientX;
+            shiftLen = touchmoveClientX - touchstartClientX;
+            translateX = originalTranslateX + shiftLen;
+
+            chartContanier.css("transform", "translateX(" + translateX + "px)");
+        });
+
+    });
+</script>
+</body>
+</html>
